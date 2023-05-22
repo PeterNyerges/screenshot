@@ -1,0 +1,40 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ScreenCapture {
+    public static void main(String[] args) {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    Robot robot = new Robot();
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                    Rectangle screenRect = new Rectangle(screenSize);
+                    BufferedImage screenshot = robot.createScreenCapture(screenRect);
+                    
+                    String timestamp = String.valueOf(System.currentTimeMillis());
+                    String fileName = "screenshot_" + timestamp + ".png";
+             
+                    File outputDir = new File("screenshots");
+                    if (!outputDir.exists()) {
+                        outputDir.mkdir();
+                    }
+                    File outputFile = new File(outputDir, fileName);
+                    ImageIO.write(screenshot, "png", outputFile);
+
+                    System.out.println("Screenshot készült: " + outputFile.getAbsolutePath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+      
+        timer.schedule(task, 0, 10000);
+    }
+}
